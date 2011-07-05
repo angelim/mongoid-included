@@ -32,10 +32,12 @@ module Mongoid
       end
       
       def model_name
-        if self.parent != Object
-          @_model_name ||= ActiveModel::Name.new(self, self.parent)
-        else
-          super
+        @_model_name ||=begin
+          if self.parent != Object
+            Mongoid::EmbeddedName.new(self, self.parent)
+          else
+            super
+          end
         end
       end
       
