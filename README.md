@@ -1,7 +1,7 @@
 Mongoid::Included
 ====================
 
-Helper module to embed documents using the parent's namespace while preserving url helpers consistence. This is useful to organize your project if you heavily rely on embedded documents. This gem concerns the issue 237 of rails repository: https://github.com/rails/rails/issues/1429
+Helper module to embed documents using the parent's namespace while preserving url helpers consistency. This is useful to organize your project if you heavily rely on embedded documents. This gem concerns the issue 237 of rails repository: https://github.com/rails/rails/issues/1429
 Works with [Mongoid 2.0](https://github.com/mongoid/mongoid) and ActiveModel 3.1.0.beta1. 
 
 Installation
