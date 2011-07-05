@@ -33,7 +33,7 @@ module Mongoid
       
       def model_name
         if self.parent != Object
-          ActiveModel::Name.new(self, self.parent)
+          @_model_name ||= ActiveModel::Name.new(self, self.parent)
         else
           super
         end
