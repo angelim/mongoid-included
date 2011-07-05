@@ -19,14 +19,16 @@ Or install with RubyGems:
 Usage
 -----
 
-In your root(master) model:
+In your embedded model:
 
 	# Include the helper module
 	include Mongoid::DocumentInclusion
 
 	# Define parent document in embedded class
 	included_in :invoice
-	
+
+In your parent model:
+
 	# Define embedded relation in parent document
 	includes_many :items
 	includes_one :user
