@@ -3,6 +3,10 @@ require 'spec_helper'
 describe "Mongoid::Included" do
 
   context "when parent class includes a child" do
+    it "delegates options to mongoid relation macro" do
+      Invoice.relations["user"].inverse_of.should == :invoice
+    end
+    
     it "embeds many children with given association name" do
       Invoice.relations.keys.include? "items"
       Invoice.relations["items"].macro.should == :embeds_many
@@ -45,12 +49,17 @@ describe "Mongoid::Included" do
   end
   
   context "when child class is included in parent" do
+    
+    it "delegates options to mongoid relation macro" do
+      Invoice::User.relations["invoice"].inverse_of.should == :user
+    end
+    
     it "is embedded in parent class" do
       Invoice::Item.relations.keys.include? "invoice"
       Invoice::Item.relations["invoice"].macro.should == :embedded_in
     end
     
-    it "strips namespace from #param_key" do
+    it "strips namespace from param_key" do
       Invoice::Item.model_name.param_key.should == "item"
     end
     

@@ -11,23 +11,23 @@ module Mongoid
     end
     
     module ClassMethods
-      def included_in(_model)
+      def included_in(_model, args = {})
         raise NotMongoidDocument,       "Document must be a Mongoid Document" unless mongoid_document? self
         raise NotMongoidDocument,       "Parent document must be a Mongoid Document" unless mongoid_document? self.parent
         raise DocumentAlreadyIncluded,  "Document can be included only in one class" if inclusion_model
-        embedded_in _model
+        embedded_in _model, args
         self.inclusion_model = true
       end
       
-      def includes_many(_model)
+      def includes_many(_model, args = {})
         verify_dependencies(_model)
-        embeds_many _model, :class_name => included_klass(_model)
+        embeds_many _model, args.merge(:class_name => included_klass(_model))
         self.inclusion_model = true
       end
       
-      def includes_one(_model)
+      def includes_one(_model, args = {})
         verify_dependencies(_model)
-        embeds_one _model, :class_name => included_klass(_model)
+        embeds_one _model, args.merge(:class_name => included_klass(_model))
         self.inclusion_model = true
       end
       

@@ -83,7 +83,6 @@ Rake tasks
 
 Todo
 ----------
-- Delegate other mongoid options when generating relation macros. (eg. index)
 
 Known issues
 ------------
