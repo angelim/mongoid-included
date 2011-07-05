@@ -45,7 +45,6 @@ Example
 	# This will generate a Mongoid Relation with the following signature:
 		embeds_many :items, :class_name => Invoice::Item
 
-
 	class Invoice::Item
 		include Mongoid::Document
 		include Mongoid::DocumentInclusion
