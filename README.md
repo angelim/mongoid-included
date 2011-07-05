@@ -53,7 +53,7 @@ Example
 	end
 	# This will generate the following code:
 		extend ActiveModel::Naming
-		# Overriding .model_name so rails recognize the class as __Item__ and generate more convenient urls.
+		# Overriding .model_name so rails recognizes the class as __Item__ and generate more convenient urls.
 		def model_name
 			if self.parent != Object
 				ActiveModel::Name.new(self, self.parent)
