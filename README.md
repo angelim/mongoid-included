@@ -67,8 +67,6 @@ Example
 Rake tasks
 ----------
 
-should include tasks to re-sync
-
 
 Todo
 ----------
