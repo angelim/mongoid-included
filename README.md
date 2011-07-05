@@ -1,7 +1,7 @@
 Mongoid::Included
 ====================
 
-Helper module to embed documents using the parent's namespace while preserving url helpers consistence. 
+Helper module to embed documents using the parent's namespace while preserving url helpers consistence. This is useful to organize your project if you heavily rely on embedded documents. This gem concerns the issue 237 of rails repository: https://github.com/rails/rails/issues/1429
 Works with [Mongoid 2.0](https://github.com/mongoid/mongoid) and ActiveModel 3.1.0.beta1. 
 
 Installation
@@ -64,9 +64,20 @@ Example
 		
 		embedded_in :invoice
 
+	# Define routes with the embedded document as a nested resource
+	resources :invoices do
+		resources :items
+	end
+	
+	# if you decide that the controller should also use namespaces, place the __items_controller__ inside an __invoices__ folder and use:
+	resources :invoices do
+		resources :items, :module => :invoices
+	end
+	
+	
+	
 Rake tasks
 ----------
-
 
 Todo
 ----------
