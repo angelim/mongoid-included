@@ -12,9 +12,9 @@ module Mongoid
     
     module ClassMethods
       def included_in(_model, args = {})
-        raise NotMongoidDocument,       "Document must be a Mongoid Document" unless mongoid_document? self
-        raise NotMongoidDocument,       "Parent document must be a Mongoid Document" unless mongoid_document? self.parent
-        raise DocumentAlreadyIncluded,  "Document can be included only in one class" if inclusion_model
+        raise NotMongoidDocument,       "Child document must include Mongoid::Document" unless mongoid_document? self
+        raise NotMongoidDocument,       "Parent document must include Mongoid::Document" unless mongoid_document? self.parent
+        raise DocumentAlreadyIncluded,  "Child document already included" if inclusion_model
         embedded_in _model, args
         self.inclusion_model = true
       end
@@ -60,8 +60,8 @@ module Mongoid
       end
       
       def verify_dependencies(_model)
-        raise NotMongoidDocument,       "Document must be a Mongoid Document" unless mongoid_document? self
-        raise NotMongoidDocument,       "Descendent document must be a Mongoid Document" unless mongoid_document? model_klass(included_klass(_model))
+        raise NotMongoidDocument,       "Parent document must include Mongoid::Document" unless mongoid_document? self
+        raise NotMongoidDocument,       "Child document must include Mongoid::Document" unless mongoid_document? model_klass(included_klass(_model))
       end
       
     end

@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   
   s.add_runtime_dependency("activemodel", ["~> 3.1.0.beta1"])
   s.add_runtime_dependency(%q<mongoid>, ["~> 2.0"])
-  s.add_development_dependency("rspec", ["~> 2.6"])
+  s.add_development_dependency("rspec", ["~> 2.6.0"])
   s.add_development_dependency("bson_ext", ["~> 1.3"])
   
 end

@@ -21,7 +21,7 @@ describe "Mongoid::Included" do
       Invoice.relations["items"].class_name.should == "Invoice::Item"
     end
     
-    it "issues an error if not mongoid document" do
+    it "issues an error if parent is not mongoid document" do
       Object.const_set "NonMongoidDocument", Class.new
       NonMongoidDocument.send(:include, Mongoid::DocumentInclusion)
       NonMongoidDocument.const_set "NonMongoidEmbed", Class.new
@@ -29,7 +29,7 @@ describe "Mongoid::Included" do
         NonMongoidDocument.includes_many :non_mongoid_embeds
       rescue => e
         e.class.should == Mongoid::DocumentInclusion::NotMongoidDocument
-        e.message.should =~ /Document must be a Mongoid Document/
+        e.message.should =~ /Parent document must include Mongoid::Document/
       end
     end
     
@@ -42,7 +42,7 @@ describe "Mongoid::Included" do
         NonMongoidDocument.includes_many :non_mongoid_embeds
       rescue => e
         e.class.should == Mongoid::DocumentInclusion::NotMongoidDocument
-        e.message.should =~ /Descendent document must be a Mongoid Document/
+        e.message.should =~ /Child document must include Mongoid::Document/
       end
     end
   
@@ -59,28 +59,30 @@ describe "Mongoid::Included" do
       Invoice::Item.relations["invoice"].macro.should == :embedded_in
     end
     
-    it "issues an error if parent is not mongoid document" do
+    it "issues an error if child is not mongoid document" do
       Object.const_set "NonMongoidDocument", Class.new
-      NonMongoidDocument.const_set "NonMongoidParent", Class.new
+      NonMongoidDocument.const_set "NonMongoidChild", Class.new
       NonMongoidDocument.send(:include, Mongoid::Document)
       NonMongoidDocument.send(:include, Mongoid::DocumentInclusion)
+      NonMongoidDocument::NonMongoidChild.send(:include, Mongoid::DocumentInclusion)
       begin
-        NonMongoidDocument.included_in :invoice
+        NonMongoidDocument::NonMongoidChild.included_in :invoice
       rescue => e
         e.class.should == Mongoid::DocumentInclusion::NotMongoidDocument
-        e.message.should =~ /Parent document must be a Mongoid Document/
+        e.message.should =~ /Child document must include Mongoid::Document/
       end
     end    
     
     it "issues an error if parent is not mongoid document" do
       Object.const_set "NonMongoidDocument", Class.new
-      NonMongoidDocument.const_set "NonMongoidParent", Class.new
-      NonMongoidDocument.send(:include, Mongoid::DocumentInclusion)
+      NonMongoidDocument.const_set "NonMongoidChild", Class.new
+      NonMongoidDocument::NonMongoidChild.send(:include, Mongoid::Document)
+      NonMongoidDocument::NonMongoidChild.send(:include, Mongoid::DocumentInclusion)
       begin
-        NonMongoidDocument.included_in :invoice
+        NonMongoidDocument::NonMongoidChild.included_in :invoice
       rescue => e
         e.class.should == Mongoid::DocumentInclusion::NotMongoidDocument
-        e.message.should =~ /Document must be a Mongoid Document/
+        e.message.should =~ /Parent document must include Mongoid::Document/
       end
     end
     
