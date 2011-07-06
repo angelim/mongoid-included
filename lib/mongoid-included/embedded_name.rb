@@ -21,5 +21,9 @@ module Mongoid
       @route_key = ActiveSupport::Inflector.pluralize(@param_key).freeze
       @i18n_key = name.underscore.to_sym
     end
+    
+    def _singularize(string, replacement='_')
+      ActiveSupport::Inflector.underscore(string).tr('/', replacement)
+    end
   end
 end
