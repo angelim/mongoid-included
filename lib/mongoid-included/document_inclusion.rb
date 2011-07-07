@@ -5,17 +5,18 @@ module Mongoid
     extend ActiveSupport::Concern
       
     included do
-      cattr_accessor :_using_inclusion
+      cattr_accessor :included_by
+      cattr_accessor :including_many
+      cattr_accessor :including_one
     end
     
     module ClassMethods
       def included_in(_model, args = {})
-        raise NotMongoidDocument,       "Child document must include Mongoid::Document" unless mongoid_document? self
-        raise NotMongoidDocument,       "Parent document must include Mongoid::Document" unless mongoid_document? self.parent
-        raise DocumentAlreadyIncluded,  "Child document already included" if _using_inclusion
+        raise NotMongoidDocument,       "Parent must be Mongoid::Document" unless _mongoid_document? self.parent
+        raise DocumentAlreadyIncluded,  "Document already included" if included_by.present?
         embedded_in _model, args
         
-        self._using_inclusion = true
+        self.included_by = _model
         self.extend ActiveModel::Naming
         _overwrite_model_name
       end
@@ -23,11 +24,13 @@ module Mongoid
       def includes_many(_model, args = {})
         _verify_dependencies(_model)
         embeds_many _model, args.merge(:class_name => _included_klass(_model))
+        (self.including_many ||= []) << _model
       end
       
       def includes_one(_model, args = {})
         _verify_dependencies(_model)
         embeds_one _model, args.merge(:class_name => _included_klass(_model))
+        (self.including_one ||= []) << _model
       end
       
       private
@@ -56,13 +59,12 @@ module Mongoid
         "#{self}::#{_model_klass_name(_model)}"
       end
         
-      def mongoid_document?(_model)
+      def _mongoid_document?(_model)
         _model.ancestors.include?(Mongoid::Document)
       end
       
       def _verify_dependencies(_model)
-        raise NotMongoidDocument,       "Parent document must include Mongoid::Document" unless mongoid_document? self
-        raise NotMongoidDocument,       "Child document must include Mongoid::Document" unless mongoid_document? _model_klass(_included_klass(_model))
+        raise NotMongoidDocument, "Child must be Mongoid::Document" unless _mongoid_document? _model_klass(_included_klass(_model))
       end
     end
   end
