@@ -69,4 +69,3 @@ module Mongoid
     end
   end
 end
-Mongoid::Document.send(:include, ::Mongoid::DocumentInclusion)
