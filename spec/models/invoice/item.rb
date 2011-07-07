@@ -1,6 +1,5 @@
 class Invoice::Item
   include Mongoid::Document
-  include Mongoid::DocumentInclusion
   
   field :name  
   field :test, :default => "ale"

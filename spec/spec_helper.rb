@@ -15,6 +15,7 @@ end
 require 'models/invoice'
 require 'models/invoice/item'
 require 'models/invoice/user'
+require 'models/invoice/not_included'
 require 'models/inclusion'
     
 Mongoid.configure do |config|

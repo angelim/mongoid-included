@@ -2,35 +2,34 @@ require 'spec_helper'
 
 describe "Mongoid::Included" do
 
-  context "when parent class includes a child" do
+  describe "Parent Model" do
+    
+    let(:parent) { Invoice }
+    
     it "delegates options to mongoid relation macro" do
-      Invoice.relations["user"].inverse_of.should == :invoice
+      parent.relations["user"].inverse_of.should == :invoice
     end
     
     it "embeds many children with given association name" do
-      Invoice.relations.keys.include? "items"
-      Invoice.relations["items"].macro.should == :embeds_many
+      parent.relations.keys.include? "items"
+      parent.relations["items"].macro.should == :embeds_many
     end
     
     it "embeds one child with given association name" do
-      Invoice.relations.keys.include? "item"
-      Invoice.relations["user"].macro.should == :embeds_one
+      parent.relations.keys.include? "item"
+      parent.relations["user"].macro.should == :embeds_one
     end
     
     it "embeds child with given association class" do
-      Invoice.relations["items"].class_name.should == "Invoice::Item"
+      parent.relations["items"].class_name.should == "Invoice::Item"
     end
     
     it "issues an error if parent is not mongoid document" do
       Object.const_set "NonMongoidDocument", Class.new
       NonMongoidDocument.send(:include, Mongoid::DocumentInclusion)
       NonMongoidDocument.const_set "NonMongoidEmbed", Class.new
-      begin
-        NonMongoidDocument.includes_many :non_mongoid_embeds
-      rescue => e
-        e.class.should == Mongoid::DocumentInclusion::NotMongoidDocument
-        e.message.should =~ /Parent document must include Mongoid::Document/
-      end
+      expect { NonMongoidDocument.includes_many :non_mongoid_embeds }.
+      to raise_error(Mongoid::DocumentInclusion::NotMongoidDocument, /Parent document must include Mongoid::Document/)
     end
     
     it "issues an error if child is not mongoid document" do
@@ -38,12 +37,8 @@ describe "Mongoid::Included" do
       NonMongoidDocument.const_set "NonMongoidEmbed", Class.new
       NonMongoidDocument.send(:include, Mongoid::Document)
       NonMongoidDocument.send(:include, Mongoid::DocumentInclusion)
-      begin
-        NonMongoidDocument.includes_many :non_mongoid_embeds
-      rescue => e
-        e.class.should == Mongoid::DocumentInclusion::NotMongoidDocument
-        e.message.should =~ /Child document must include Mongoid::Document/
-      end
+      expect {NonMongoidDocument.includes_many :non_mongoid_embeds }.
+      to raise_error(Mongoid::DocumentInclusion::NotMongoidDocument, /Child document must include Mongoid::Document/)
     end
   
   end
@@ -65,12 +60,8 @@ describe "Mongoid::Included" do
       NonMongoidDocument.send(:include, Mongoid::Document)
       NonMongoidDocument.send(:include, Mongoid::DocumentInclusion)
       NonMongoidDocument::NonMongoidChild.send(:include, Mongoid::DocumentInclusion)
-      begin
-        NonMongoidDocument::NonMongoidChild.included_in :invoice
-      rescue => e
-        e.class.should == Mongoid::DocumentInclusion::NotMongoidDocument
-        e.message.should =~ /Child document must include Mongoid::Document/
-      end
+      expect { NonMongoidDocument::NonMongoidChild.included_in :invoice }.
+      to raise_error(Mongoid::DocumentInclusion::NotMongoidDocument, /Child document must include Mongoid::Document/)
     end    
     
     it "issues an error if parent is not mongoid document" do
@@ -78,12 +69,8 @@ describe "Mongoid::Included" do
       NonMongoidDocument.const_set "NonMongoidChild", Class.new
       NonMongoidDocument::NonMongoidChild.send(:include, Mongoid::Document)
       NonMongoidDocument::NonMongoidChild.send(:include, Mongoid::DocumentInclusion)
-      begin
-        NonMongoidDocument::NonMongoidChild.included_in :invoice
-      rescue => e
-        e.class.should == Mongoid::DocumentInclusion::NotMongoidDocument
-        e.message.should =~ /Parent document must include Mongoid::Document/
-      end
+      expect { NonMongoidDocument::NonMongoidChild.included_in :invoice }.
+      to raise_error(Mongoid::DocumentInclusion::NotMongoidDocument, /Parent document must include Mongoid::Document/)
     end
     
     context "when overwriting #model_name" do
@@ -98,17 +85,15 @@ describe "Mongoid::Included" do
       it "pluralize namespace in #partial_path" do
         Invoice::Item.model_name.partial_path.should == "invoices/items/item"
       end
-    end
-    
-    it "forbids inclusion in another parent" do
-      begin
-        Invoice::Item.included_in :invoice
-      rescue => e
-        e.class.should == Mongoid::DocumentInclusion::DocumentAlreadyIncluded
+      
+      it "should not override without #included_in" do
+        Invoice::NotIncluded.model_name.should == "Invoice::NotIncluded"
       end
     end
     
-    
+    it "forbids inclusion in another parent" do
+      expect { Invoice::Item.included_in :invoice }.to raise_error { Mongoid::DocumentInclusion::DocumentAlreadyIncluded }
+    end
   end
   
 end

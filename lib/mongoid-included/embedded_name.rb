@@ -5,7 +5,6 @@ module Mongoid
 
     def initialize(klass, namespace, pluralize_namespace = true)
       name ||= klass.name
-      # super(name)
       @unnamespaced = name.sub(/^#{namespace.name}::/, '') if namespace
 
       @klass = klass
