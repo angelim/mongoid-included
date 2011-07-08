@@ -23,7 +23,7 @@ describe "Child Model" do
       Invoice::Item.relations["invoice"].macro.should == :embedded_in
     end
     it "#includded_in returns parent model" do
-      Invoice::Item.included_by.should == :invoice
+      Invoice::Item.included_by.should include Invoice
     end
     it "forbids inclusion in another parent" do
       expect { Invoice::Item.included_in :invoice }.

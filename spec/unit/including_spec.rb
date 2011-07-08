@@ -7,7 +7,7 @@ describe "Parent Model" do
   describe "#includes_many" do
     context "when including one model" do
       it "#includding_many returns array with one model" do
-        parent.including_many.should include(:items)
+        parent.including_many.should include(Invoice::Item)
       end
       it "embeds child with association name" do
         parent.relations.keys.should include "items"
@@ -20,7 +20,7 @@ describe "Parent Model" do
     context "when including two models" do
       it "#includding_many returns array with two models" do
         parent.includes_many :not_includeds
-        parent.including_many.should include(:items, :not_includeds)
+        parent.including_many.should include(Invoice::Item, Invoice::NotIncluded)
       end
     end
     context "when not including with #includes_many" do
@@ -33,7 +33,7 @@ describe "Parent Model" do
   describe "#includes_one" do
     context "when including one model" do
       it "#including_one returns array with one model" do
-        parent.including_one.should include(:user)
+        parent.including_one.should include(Invoice::User)
       end
       it "delegates options to mongoid relation macro" do
         parent.relations["user"].inverse_of.should == :invoice
@@ -46,7 +46,7 @@ describe "Parent Model" do
     context "when including two models" do
       it "#includding_one returns array with two models" do
         parent.includes_one :not_includeds
-        parent.including_one.should include(:user, :not_includeds)
+        parent.including_one.should include(Invoice::User, Invoice::NotIncluded)
       end
     end
     context "when not including with #includes_one" do
