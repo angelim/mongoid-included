@@ -22,7 +22,11 @@ module Mongoid
       end
       
       def includes_many(_model, args = {})
+        if args && args[:skip_validation]
+          args.delete(:skip_validation)
+        else
         _verify_dependencies(_model)
+        end
         embeds_many _model, args.merge(:class_name => _included_klass_name(_model))
         (self.including_many ||= []) << _included_klass(_model)
       end
