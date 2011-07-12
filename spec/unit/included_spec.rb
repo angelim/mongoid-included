@@ -26,7 +26,9 @@ describe "Child Model" do
       Invoice::Item.included_by.should include Invoice
     end
     it "forbids inclusion in another parent" do
-      expect { Invoice::Item.included_in :invoice }.
+      Object.const_set "AnotherDocument", Class.new
+      AnotherDocument.send(:include, Mongoid::Document)
+      expect { Invoice::Item.included_in :another_document }.
       to raise_error Mongoid::DocumentInclusion::DocumentAlreadyIncluded, /Document already included/
     end
   end

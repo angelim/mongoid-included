@@ -5,7 +5,8 @@ class Invoice
 end
 
 class Invoice::Item
-  included_in :invoice
+  included_in :invoice, :inverse_of => :items
+  included_in :invoice, :inverse_of => :other_items
 end
 
 class Invoice::User
