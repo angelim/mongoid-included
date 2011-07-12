@@ -12,19 +12,23 @@ module Mongoid
     
     module ClassMethods
       def included_in(_model, args = {})
-        raise DocumentAlreadyIncluded,  "Document already included" if (!included_by.blank? && included_by!=[_model_klass(_model)]) 
+        if args && args[:class_name]
+          _class_name = args[:class_name]
+        else
+          _class_name = _model
+        end
+        
         raise NotMongoidDocument,       "Parent must be Mongoid::Document" unless _mongoid_document? self.parent
+        raise DocumentAlreadyIncluded,  "Document already included" if (!included_by.blank? && included_by!=[_model_klass(_class_name)]) 
         embedded_in _model, args
         
-        self.included_by ||=[]
-        self.included_by << _model_klass(_model) unless included_by.include? _model_klass(_model)
+        (self.included_by ||= []) << _model_klass(_class_name)
         self.extend ActiveModel::Naming
         _overwrite_model_name
       end
       
       def includes_many(_model, args = {})
-        if args && args[:skip_validation] && args[:skip_validation]==true
-          args.delete(:skip_validation)
+        if args && args[:class_name]
           _class_name = args[:class_name]
           self.including_many ||= []
           self.including_many << _model_klass(_class_name) unless including_many.include? _model_klass(_class_name)
@@ -38,9 +42,17 @@ module Mongoid
       end
       
       def includes_one(_model, args = {})
-        _verify_dependencies(_model)
-        embeds_one _model, args.merge(:class_name => _included_klass_name(_model))
-        (self.including_one ||= []) << _included_klass(_model)
+        if args && args[:class_name]
+          _class_name = args[:class_name]
+          self.including_one ||= []
+          self.including_one << _model_klass(_class_name) unless including_one.include? _model_klass(_class_name)
+        else
+          _verify_dependencies(_model)
+          _class_name = _included_klass_name(_model)
+          self.including_one ||= []
+          self.including_one << _included_klass(_model) unless including_one.include? _included_klass(_model)
+        end
+        embeds_one _model, args.merge(:class_name => _class_name)
       end
       
       private

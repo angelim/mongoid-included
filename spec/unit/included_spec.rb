@@ -31,6 +31,16 @@ describe "Child Model" do
       expect { Invoice::Item.included_in :another_document }.
       to raise_error Mongoid::DocumentInclusion::DocumentAlreadyIncluded, /Document already included/
     end
+    context "when included with custom relation name" do
+      it "returns relation name" do
+        Invoice::Item.relations["invoiced_by"].macro.should == :embedded_in
+      end
+      it "returns relation class" do
+        Invoice::Item.relations["invoiced_by"].class_name.should == "Invoice"
+      end
+      
+      
+    end
   end
   
   context "when not included" do

@@ -63,6 +63,15 @@ describe "Parent Model" do
         Invoice::Item.including_one.should be_blank
       end
     end
+    context "when including with custom relation name" do
+      it "embeds child with association name" do
+        parent.relations.keys.should include "other_items"
+        parent.relations["other_user"].macro.should == :embeds_one
+      end
+      it "embeds child with association class" do
+        parent.relations["other_user"].class_name.should == "Invoice::User"
+      end
+    end
   end
 
   it "issues an error if child is not mongoid document" do
