@@ -1,6 +1,7 @@
 class Invoice
   includes_many :items
   includes_one :user, :inverse_of => :invoice, :index => true
+  includes_many :other_items, :class_name => "Invoice::Item", :skip_validation => true
 end
 
 class Invoice::Item

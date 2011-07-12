@@ -28,6 +28,15 @@ describe "Parent Model" do
         Invoice::Item.including_many.should be_blank
       end
     end
+    context "when including with custom relation name" do
+      it "embeds child with association name" do
+        parent.relations.keys.should include "other_items"
+        parent.relations["other_items"].macro.should == :embeds_many
+      end
+      it "embeds child with association class" do
+        parent.relations["other_items"].class_name.should == "Invoice::Item"
+      end
+    end
   end
   
   describe "#includes_one" do
