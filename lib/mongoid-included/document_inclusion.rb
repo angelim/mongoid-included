@@ -12,12 +12,6 @@ module Mongoid
     
     module ClassMethods
       def included_in(_model, args = {})
-        # if args && args[:skip_validation] && args[:skip_validation]==true
-        #   args.delete(:skip_validation)
-        # else
-        #   raise DocumentAlreadyIncluded,  "Document already included" if !included_by.blank?
-        # end
-        puts included_by
         raise DocumentAlreadyIncluded,  "Document already included" if (!included_by.blank? && included_by!=[_model_klass(_model)]) 
         raise NotMongoidDocument,       "Parent must be Mongoid::Document" unless _mongoid_document? self.parent
         embedded_in _model, args
