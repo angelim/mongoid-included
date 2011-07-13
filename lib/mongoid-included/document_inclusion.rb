@@ -22,7 +22,7 @@ module Mongoid
         raise DocumentAlreadyIncluded,  "Document already included" if (!included_by.blank? && included_by!=[_model_klass(_class_name)]) 
         embedded_in _model, args
         
-        included_by ||= []
+        self.included_by ||= []
         self.included_by << _model_klass(_class_name) unless included_by.include? _model_klass(_class_name)
         self.extend ActiveModel::Naming
         _overwrite_model_name
