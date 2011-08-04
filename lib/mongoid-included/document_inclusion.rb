@@ -64,7 +64,8 @@ module Mongoid
             if self.parent != Object
               Mongoid::EmbeddedName.new(self, self.parent)
             else
-              super
+              namespace = self.parents.detect { |n| n.respond_to?(:_railtie) }
+              ActiveModel::Name.new(self, namespace)
             end
           end
         EOF
