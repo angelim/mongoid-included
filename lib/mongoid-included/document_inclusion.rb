@@ -60,12 +60,14 @@ module Mongoid
       
       def _overwrite_model_name
         self.class_eval <<-EOF
-          @_model_name ||=begin
-            if self.parent != Object
-              Mongoid::EmbeddedName.new(self, self.parent)
-            else
-              namespace = self.parents.detect { |n| n.respond_to?(:_railtie) }
-              ActiveModel::Name.new(self, namespace)
+          def self.model_name
+            @_model_name ||=begin
+              if self.parent != Object
+                Mongoid::EmbeddedName.new(self, self.parent)
+              else
+                namespace = self.parents.detect { |n| n.respond_to?(:_railtie) }
+                ActiveModel::Name.new(self, namespace)
+              end
             end
           end
         EOF
