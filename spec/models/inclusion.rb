@@ -1,6 +1,6 @@
 class Invoice
   includes_many :items
-  includes_one :user, :inverse_of => :invoice, :index => true
+  includes_one :user, :inverse_of => :invoice
   includes_one :other_user, :class_name => "Invoice::User", :inverse_of => :user_invoice
   includes_many :other_items, :class_name => "Invoice::Item"
 end
