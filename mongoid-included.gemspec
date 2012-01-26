@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
   
-  s.add_runtime_dependency(%q<mongoid>, ["~> 2.0"])
+  s.add_runtime_dependency(%q<mongoid>, [">= 2.0"])
   s.add_development_dependency("rspec", ["~> 2.6.0"])
   s.add_development_dependency("bson_ext", ["~> 1.3"])
   
