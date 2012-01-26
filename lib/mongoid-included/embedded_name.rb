@@ -3,10 +3,11 @@ module Mongoid
     attr_reader :singular, :plural, :element, :collection, :partial_path, :route_key, :param_key, :i18n_key
     alias_method :cache_key, :collection
 
-    def initialize(klass, namespace, pluralize_namespace = true)
+    def initialize(klass, namespace, name = nil, pluralize_namespace = true)
       name ||= klass.name
       super(name)
-      @unnamespaced = name.sub(/^#{namespace.name}::/, '') if namespace
+      @unnamespaced = name.sub(/^#{namespace.name}::/, '')
+      
       @klass = klass
       @singular = _singularize(name).freeze
       @singular_namespace = _singularize(namespace.name).freeze
@@ -15,7 +16,8 @@ module Mongoid
       @element = ActiveSupport::Inflector.underscore(ActiveSupport::Inflector.demodulize(name)).freeze
       @human = ActiveSupport::Inflector.humanize(@element).freeze
       @collection = ActiveSupport::Inflector.tableize(name).freeze
-      @partial_path = "#{@collection.sub(@singular_namespace, @plural_namespace)}/#{@element}".freeze
+      @partial_path = (pluralize_namespace  ? "#{@collection.sub(@singular_namespace, @plural_namespace)}/#{@element}" 
+                                            : "#{@collection}/#{@element}").freeze
       @param_key =  _singularize(@unnamespaced).freeze
       @route_key = ActiveSupport::Inflector.pluralize(@param_key).freeze
       @i18n_key = name.underscore.to_sym
