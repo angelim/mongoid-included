@@ -9,9 +9,15 @@ describe "Child Model" do
     it "strips namespace from #route_key" do
       Invoice::Item.model_name.route_key.should == "items"
     end
-  
-    it "pluralize namespace in #partial_path" do
-      Invoice::Item.model_name.partial_path.should == "invoices/items/item"
+    context "when pluralizing partial path" do
+      it "returns partial path with pluralized embedding class" do
+        Invoice::Item.new.to_partial_path.should == "invoices/items/item"
+      end
+    end
+    context "when skipping partial path pluralization" do
+      it "returns partial path with singular embedding class" do
+        Invoice::PriceList.new.to_partial_path.should == "invoice/price_lists/price_list"
+      end
     end
     
     it "delegates options to mongoid relation macro" do

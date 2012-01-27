@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.authors = ["Alexandre Angelim"]
   s.email = %q{angelim@angelim.com.br}  
   s.homepage = %q{http://github.com/angelim/mongoid-included}    
-  s.summary = %q{Included namespaces documents for Mongoid}  
+  s.summary = %q{Included namespaced documents for Mongoid}  
   s.description = %q{Helper to facilitate inclusion of namespaced documents in another Mongoid Document}
     
   s.rubyforge_project = "mongoid-included"
@@ -19,8 +19,11 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
   
-  s.add_runtime_dependency(%q<mongoid>, [">= 2.0"])
+  s.add_runtime_dependency(%q<mongoid>, [">= 2.4"])
+  s.add_runtime_dependency(%q<activemodel>, ["~> 3.2"])
   s.add_development_dependency("rspec", ["~> 2.6.0"])
   s.add_development_dependency("bson_ext", ["~> 1.3"])
+  s.add_development_dependency "rake", ["~> 0.9"]
+  s.add_development_dependency "yard", ["~> 0.7.4"]
   
 end

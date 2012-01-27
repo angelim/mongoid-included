@@ -1,0 +1,8 @@
+# v1.0.0
+- Updating dependency to ActiveModel 3.2
+- Getting rid of +Embedded::Name+, since partial_path will be deprecated in ActiveModel
+- Overriding +Model._to_partial_path+, originally implemented in ActiveModel::Conversion
+- :skip_path_pluralization option added for #included_in. Allows conventional use of partial paths, without pluralization.
+
+# v0.3.1
+- Allowing Mongoid 3.0 support in Gemspec

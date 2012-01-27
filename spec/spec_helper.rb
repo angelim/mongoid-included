@@ -14,6 +14,7 @@ MODELS.each do |_model|
 end
 require 'models/invoice'
 require 'models/invoice/item'
+require 'models/invoice/price_list'
 require 'models/invoice/user'
 require 'models/invoice/not_included'
 require 'models/inclusion'

@@ -1,4 +1,3 @@
-require 'mongoid-included/embedded_name'
 require 'mongoid-included/inclusion_errors'
 module Mongoid
   module DocumentInclusion
@@ -12,6 +11,7 @@ module Mongoid
     
     module ClassMethods
       def included_in(_model, args = {})
+        @skip_path_pluralization = args && args.delete(:skip_path_pluralization)
         if args && args[:class_name]
           _class_name = args[:class_name]
         else
@@ -59,18 +59,26 @@ module Mongoid
       private
       
       def _overwrite_model_name
-        self.class_eval <<-EOF
-          def self.model_name
-            @_model_name ||=begin
-              if self.parent != Object
-                Mongoid::EmbeddedName.new(self, self.parent)
-              else
-                namespace = self.parents.detect { |n| n.respond_to?(:_railtie) }
-                ActiveModel::Name.new(self, namespace)
+        if self.parent != Object
+          self.class_eval <<-EOF
+            def self.model_name
+              @_model_name ||=begin
+                ActiveModel::Name.new(self, self.parent)
               end
             end
+          EOF
+          unless @skip_path_pluralization
+            self.class_eval <<-EOF
+              def self._to_partial_path
+                @_to_partial_path ||= begin
+                  plural_namespace = ActiveSupport::Inflector.tableize(self.parent).freeze
+                  plural_element = ActiveSupport::Inflector.pluralize(model_name.element)
+                  path = [plural_namespace, plural_element, model_name.element].join("/").freeze
+                end
+              end
+            EOF
           end
-        EOF
+        end
       end
       
       def _model_klass_name(_model)

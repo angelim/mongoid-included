@@ -1,8 +1,10 @@
 Mongoid::Included
 ====================
 
-Helper module to embed documents using the parent's namespace while preserving url helpers consistency. This is useful to organize your project if you heavily rely on embedded documents. This gem concerns the issue 1429 of rails repository: https://github.com/rails/rails/issues/1429
-Works with [Mongoid 2.0](https://github.com/mongoid/mongoid) and ActiveModel 3.1.0.beta1. 
+Helper module to embed documents using the parent's namespace while preserving url helpers consistency. 
+This is useful to organize your project if you heavily rely on embedded documents. 
+This gem concerns the issue 1429 of rails repository: https://github.com/rails/rails/issues/1429
+Works with [Mongoid 2.4](https://github.com/mongoid/mongoid) and ActiveModel 3.2.0. 
 
 Installation
 ------------
@@ -39,7 +41,6 @@ Example
 
 	class Invoice
 		include Mongoid::Document
-		include Mongoid::DocumentInclusion
 		
 		includes_many :items
 	end
@@ -49,14 +50,13 @@ Example
 
 	class Invoice::Item
 		include Mongoid::Document
-		include Mongoid::DocumentInclusion
 	
 		included_in :invoice
 	end
 	# This will generate the following code:
 		extend ActiveModel::Naming
 		# Overriding .model_name so rails recognizes the class as __Item__ and generate more convenient urls.
-		def model_name
+		def self.model_name
 			if self.parent != Object
 				ActiveModel::Name.new(self, self.parent)
 			else

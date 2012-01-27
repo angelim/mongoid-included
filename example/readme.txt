@@ -5,4 +5,4 @@ the parent's document folder
 
 This conventions respects url generation, 
 correct parameter names in form building 
-and template locations, incluing partials
+and template locations, incluing partials.

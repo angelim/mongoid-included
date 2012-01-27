@@ -1,5 +1,6 @@
 class Invoice
   includes_many :items
+  includes_many :price_lists
   includes_one :user, :inverse_of => :invoice
   includes_one :other_user, :class_name => "Invoice::User", :inverse_of => :user_invoice
   includes_many :other_items, :class_name => "Invoice::Item"
@@ -13,4 +14,8 @@ end
 class Invoice::User
   included_in :invoice, :inverse_of => :user
   included_in :user_invoice, :class_name => "Invoice", :inverse_of => :other_user
+end
+
+class Invoice::PriceList
+  included_in :invoice, :inverse_of => :price_lists, :skip_path_pluralization => true
 end
